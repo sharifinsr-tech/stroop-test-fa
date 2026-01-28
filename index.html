@@ -206,7 +206,7 @@
             trialsPerCondition: 12, // ۱۲ همخوان + ۱۲ ناهمخوان = ۲۴ آزمایش
             displayTime: 1500,
             restTime: 500,
-            webAppUrl: 'https://script.google.com/macros/s/AKfycbxgBjoR4NWqt4tV8Lho8m42DAGFOJ9JGJfyFcBvW8GTSP3cH6lzAfQvoKrxbKDZAINlUQ/exec' // جایگزین کنید
+            webAppUrl: 'https://script.google.com/macros/s/AKfycbzSGGdW5PKSWoDL7Z_QesoUMTaWa4T93rqeixL1g26Z4L341kE_DWIt1eFtuBkRUL4X3w/exec' 
         };
 
         // ==================== وضعیت جلسه ====================
@@ -377,55 +377,58 @@
         }
 
         // ==================== پایان آزمون ====================
-        function finishTest() {
-            clearInterval(session.timerInterval);
-            
-            // محاسبه نتایج نهایی
-            const correctCount = session.results.filter(r => r.isCorrect === 1).length;
-            const accuracy = (correctCount / session.results.length) * 100;
-            const avgTime = session.results.reduce((sum, r) => sum + r.reactionTime, 0) / session.results.length;
-            
-            // نمایش نتایج
-            document.getElementById('finalAccuracy').textContent = `${Math.round(accuracy)}٪`;
-            document.getElementById('finalAvgTime').textContent = `${Math.round(avgTime)}ms`;
-            
-            // ارسال نتایج به سرور
-            sendResultsToServer();
-            
-            // رفتن به صفحه نتایج
-            setTimeout(() => switchPage('resultPage'), 500);
-        }
+function finishTest() {
+    clearInterval(session.timerInterval);
+    
+    const correctCount = session.results.filter(r => r.isCorrect === 1).length;
+    const accuracy = (correctCount / session.results.length) * 100;
+    const avgTime = session.results.reduce((sum, r) => sum + r.reactionTime, 0) / session.results.length;
+    
+    document.getElementById('finalAccuracy').textContent = `${Math.round(accuracy)}٪`;
+    document.getElementById('finalAvgTime').textContent = `${Math.round(avgTime)}ms`;
+    
+    // ارسال نتایج به Google Sheets
+    sendResultsToGoogleSheets();
+    
+    // رفتن به صفحه نتایج
+    setTimeout(() => switchPage('resultPage'), 500);
+}
 
-        // ==================== ارسال نتایج به Google Sheets ====================
-        function sendResultsToServer() {
-            const data = {
-                studentCode: session.studentCode,
-                totalTrials: session.trials.length,
-                results: session.results,
-                summary: {
-                    accuracy: (session.results.filter(r => r.isCorrect === 1).length / session.results.length * 100).toFixed(1),
-                    avgReactionTime: Math.round(session.results.reduce((sum, r) => sum + r.reactionTime, 0) / session.results.length),
-                    congruentAvg: Math.round(session.results.filter(r => r.type === 'همخوان' && r.isCorrect === 1)
-                        .reduce((sum, r) => sum + r.reactionTime, 0) / 
-                        (session.results.filter(r => r.type === 'همخوان' && r.isCorrect === 1).length || 1)),
-                    incongruentAvg: Math.round(session.results.filter(r => r.type === 'ناهمخوان' && r.isCorrect === 1)
-                        .reduce((sum, r) => sum + r.reactionTime, 0) / 
-                        (session.results.filter(r => r.type === 'ناهمخوان' && r.isCorrect === 1).length || 1))
-                }
-            };
-            
-            // ارسال به Google Apps Script Web App
-            fetch(CONFIG.webAppUrl, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            }).catch(err => {
-                console.log('نتایج ذخیره شد (حتی اگر خطا نشان دهد)');
-            });
-        }
+// ==================== ارسال نتایج به Google Sheets ====================
+function sendResultsToGoogleSheets() {
+    const data = {
+        studentCode: session.studentCode,
+        results: session.results
+    };
+    
+    // ارسال درخواست
+    fetch(CONFIG.webAppUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(() => {
+        console.log('✅ نتایج ارسال شدند');
+        document.getElementById('resultPage').innerHTML += 
+            '<p style="color: green; margin-top: 20px;">✅ نتایج ذخیره شد</p>';
+    })
+    .catch(error => {
+        console.log('⚠️ نتایج در مرورگر ذخیره شدند (برای ارسال دستی)');
+        // ذخیره در localStorage به عنوان پشتیبان
+        localStorage.setItem('stroop_results_' + session.studentCode, JSON.stringify(data));
+        
+        // نمایش کد برای ارسال دستی
+        const backupCode = btoa(JSON.stringify(data));
+        document.getElementById('resultPage').innerHTML += 
+            '<div style="background: #fff3cd; padding: 15px; border-radius: 10px; margin-top: 20px;">' +
+            '<p>⚠️ نتایج به صورت محلی ذخیره شد. کد زیر را برای پژوهشگر ارسال کنید:</p>' +
+            '<textarea style="width:100%; height: 100px; font-family: monospace;">' + 
+            backupCode + '</textarea></div>';
+    });
+}
 
         // ==================== تغییر صفحه ====================
         function switchPage(pageId) {
