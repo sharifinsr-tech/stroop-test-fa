@@ -212,294 +212,376 @@
 
     <script>
         // ==================== تنظیمات آزمون ====================
-        const CONFIG = {
-            words: ['قرمز', 'آبی', 'سبز'],
-            colors: ['قرمز', 'آبی', 'سبز'],
-            trialsPerCondition: 12,
-            displayTime: 1500,
-            restTime: 500,
-            // 🔥 لینک Apps Script شما - مهم!
-            webAppUrl: 'https://script.google.com/macros/s/AKfycby3dNOS7JOm2WGljUoxuJ1moRgJswW3y72ceKA72TrRebxQh5hiBiXvgTkbj926H50ivw/exec'
-        };
+const CONFIG = {
+    words: ['قرمز', 'آبی', 'سبز'],
+    colors: ['قرمز', 'آبی', 'سبز'],
+    trialsPerCondition: 12,
+    displayTime: 1500,
+    restTime: 500,
+    webAppUrl: 'https://script.google.com/macros/s/AKfycbw6wvrt8c61yJzchSyLCkGQmWa6bWeieIs-HvrjH22Nm-P90F630PzfoNnvlmVhwNIV5Q/exec'
+};
 
-        // ==================== وضعیت جلسه ====================
-        let session = {
-            studentCode: '',
-            trials: [],
-            currentTrial: 0,
-            startTime: 0,
-            results: [],
-            testStartTime: 0,
-            timerInterval: null
-        };
+// ==================== وضعیت جلسه ====================
+let session = {
+    studentCode: '',
+    trials: [],
+    currentTrial: 0,
+    startTime: 0,
+    results: [],
+    testStartTime: 0,
+    timerInterval: null
+};
 
-        // ==================== شروع آزمون ====================
-        function startTest() {
-            session.studentCode = document.getElementById('studentId').value.trim();
-            
-            if (!session.studentCode) {
-                alert('لطفا کد دانشجویی خود را وارد کنید.');
-                return;
-            }
-            
-            document.getElementById('studentCodeDisplay').textContent = 'کد: ' + session.studentCode;
-            generateTrials();
-            session.testStartTime = Date.now();
-            startTimer();
-            switchPage('testPage');
-            setTimeout(() => runTrial(), 1000);
-        }
+// ==================== شروع آزمون ====================
+function startTest() {
+    session.studentCode = document.getElementById('studentId').value.trim();
+    
+    if (!session.studentCode) {
+        alert('لطفا کد دانشجویی خود را وارد کنید.');
+        return;
+    }
+    
+    document.getElementById('studentCodeDisplay').textContent = 'کد: ' + session.studentCode;
+    generateTrials();
+    session.testStartTime = Date.now();
+    startTimer();
+    switchPage('testPage');
+    
+    // تاخیر کوتاه قبل از شروع اولین آزمایش
+    setTimeout(() => runTrial(), 500);
+}
 
-        // ==================== تولید آزمایش‌ها ====================
-        function generateTrials() {
-            session.trials = [];
-            
-            // آزمایش‌های همخوان
-            for (let i = 0; i < CONFIG.trialsPerCondition; i++) {
-                CONFIG.words.forEach(word => {
-                    session.trials.push({
-                        type: 'همخوان',
-                        word: word,
-                        color: word
-                    });
-                });
-            }
-            
-            // آزمایش‌های ناهمخوان
-            for (let i = 0; i < CONFIG.trialsPerCondition; i++) {
-                CONFIG.words.forEach(word => {
-                    const availableColors = CONFIG.colors.filter(c => c !== word);
-                    const randomColor = availableColors[Math.floor(Math.random() * availableColors.length)];
-                    
-                    session.trials.push({
-                        type: 'ناهمخوان',
-                        word: word,
-                        color: randomColor
-                    });
-                });
-            }
-            
-            // تصادفی‌سازی
-            shuffleArray(session.trials);
-        }
-
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
-        // ==================== اجرای آزمایش ====================
-        function runTrial() {
-            if (session.currentTrial >= session.trials.length) {
-                finishTest();
-                return;
-            }
-            
-            const trial = session.trials[session.currentTrial];
-            const stimulus = document.getElementById('stimulus');
-            
-            stimulus.textContent = trial.word;
-            stimulus.style.color = getColorCode(trial.color);
-            
-            updateProgress();
-            session.startTime = Date.now();
-            
-            // زمان‌بندی خودکار برای رفتن به آزمایش بعدی
-            setTimeout(() => {
-                if (session.currentTrial < session.trials.length && 
-                    Date.now() - session.startTime >= CONFIG.displayTime) {
-                    recordResponse('بدون پاسخ');
-                }
-            }, CONFIG.displayTime + 500);
-        }
-
-        function getColorCode(color) {
-            return color === 'قرمز' ? '#f44336' : 
-                   color === 'آبی' ? '#2196f3' : '#4caf50';
-        }
-
-        // ==================== ثبت پاسخ ====================
-        function recordResponse(color) {
-            const reactionTime = Date.now() - session.startTime;
-            const trial = session.trials[session.currentTrial];
-            
-            session.results.push({
-                trialNumber: session.currentTrial + 1,
-                type: trial.type,
-                word: trial.word,
-                correctColor: trial.color,
-                userResponse: color,
-                reactionTime: reactionTime,
-                isCorrect: color === trial.color ? 1 : 0
+// ==================== تولید آزمایش‌ها ====================
+function generateTrials() {
+    session.trials = [];
+    
+    // آزمایش‌های همخوان (12 × 3 = 36)
+    for (let i = 0; i < CONFIG.trialsPerCondition; i++) {
+        CONFIG.words.forEach(word => {
+            session.trials.push({
+                type: 'همخوان',
+                word: word,
+                color: word
             });
-            
-            document.getElementById('stimulus').textContent = '';
-            updateStats();
-            session.currentTrial++;
-            
-            setTimeout(() => {
-                if (session.currentTrial < session.trials.length) {
-                    runTrial();
-                }
-            }, CONFIG.restTime);
-        }
-
-        // ==================== به‌روزرسانی ====================
-        function updateProgress() {
-            document.getElementById('trialCounter').textContent = 
-                `آزمایش: ${session.currentTrial + 1}/${session.trials.length}`;
-        }
-
-        function updateStats() {
-            if (session.results.length === 0) return;
-            
-            const avgTime = session.results.reduce((sum, r) => sum + r.reactionTime, 0) / session.results.length;
-            document.getElementById('avgTime').textContent = `میانگین: ${Math.round(avgTime)}ms`;
-            
-            const correctCount = session.results.filter(r => r.isCorrect === 1).length;
-            const accuracy = (correctCount / session.results.length) * 100;
-            document.getElementById('accuracy').textContent = `دقت: ${Math.round(accuracy)}٪`;
-        }
-
-        // ==================== تایمر ====================
-        function startTimer() {
-            clearInterval(session.timerInterval);
-            
-            session.timerInterval = setInterval(() => {
-                const elapsed = Date.now() - session.testStartTime;
-                const minutes = Math.floor(elapsed / 60000);
-                const seconds = Math.floor((elapsed % 60000) / 1000);
-                
-                document.getElementById('timer').textContent = 
-                    `زمان: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            }, 1000);
-        }
-
-        // ==================== پایان آزمون ====================
-        function finishTest() {
-            clearInterval(session.timerInterval);
-            
-            const correctCount = session.results.filter(r => r.isCorrect === 1).length;
-            const accuracy = (correctCount / session.results.length) * 100;
-            const avgTime = session.results.reduce((sum, r) => sum + r.reactionTime, 0) / session.results.length;
-            
-            document.getElementById('finalAccuracy').textContent = `${Math.round(accuracy)}٪`;
-            document.getElementById('finalAvgTime').textContent = `${Math.round(avgTime)}ms`;
-            
-            // ارسال نتایج به سرور
-            sendResultsToServer();
-            
-            // رفتن به صفحه نتایج
-            setTimeout(() => switchPage('resultPage'), 500);
-        }
-
-        // ==================== ارسال نتایج ====================
-        function sendResultsToServer() {
-            const data = {
-                studentCode: session.studentCode,
-                results: session.results,
-                timestamp: new Date().toISOString(),
-                totalTrials: session.trials.length,
-                correctTrials: session.results.filter(r => r.isCorrect === 1).length
-            };
-            
-            showMessage('در حال ذخیره نتایج...', 'warning');
-            
-            // روش ۱: استفاده از fetch با no-cors
-            fetch(CONFIG.webAppUrl, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `data=${encodeURIComponent(JSON.stringify(data))}`
-            })
-            .then(() => {
-                // با no-cors همیشه success برمی‌گردد
-                console.log('درخواست ارسال شد (no-cors mode)');
-                showMessage('✅ نتایج شما ثبت شد', 'success');
-                
-                // همچنین در localStorage ذخیره کن
-                saveLocalBackup(data);
-            })
-            .catch(error => {
-                console.warn('خطا در ارسال:', error);
-                showMessage('⚠️ نتایج در مرورگر ذخیره شد', 'warning');
-                saveLocalBackup(data);
-                showBackupCode(data);
-            });
-        }
-
-        // ==================== نمایش پیام ====================
-        function showMessage(text, type) {
-            const container = document.getElementById('messageContainer');
-            container.innerHTML = `
-                <div class="message-box ${type}">
-                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
-                    ${text}
-                </div>
-            `;
-        }
-
-        // ==================== ذخیره پشتیبان ====================
-        function saveLocalBackup(data) {
-            const key = `stroop_backup_${session.studentCode}_${Date.now()}`;
-            localStorage.setItem(key, JSON.stringify(data));
-            console.log('ذخیره محلی با کلید:', key);
-        }
-
-        // ==================== نمایش کد پشتیبان ====================
-        function showBackupCode(data) {
-            const backupCode = btoa(encodeURIComponent(JSON.stringify(data)));
-            const container = document.getElementById('backupContainer');
-            container.style.display = 'block';
-            container.innerHTML = `
-                <div class="warning message-box">
-                    <p><strong><i class="fas fa-download"></i> کد پشتیبان:</strong></p>
-                    <p style="font-size: 12px; margin: 10px 0;">
-                        در صورت عدم ذخیره خودکار، این کد را برای پژوهشگر ارسال کنید:
-                    </p>
-                    <textarea 
-                        id="backupCodeText" 
-                        style="width:100%; height: 80px; font-family: monospace; 
-                               padding: 10px; border: 1px solid #ddd; border-radius: 5px;"
-                        readonly
-                    >${backupCode}</textarea>
-                    <button onclick="copyBackupCode()" 
-                            style="margin-top: 10px; padding: 8px 15px; background: #6c757d; 
-                                   color: white; border: none; border-radius: 5px; cursor: pointer;">
-                        <i class="far fa-copy"></i> کپی کد
-                    </button>
-                </div>
-            `;
-        }
-
-        function copyBackupCode() {
-            const textarea = document.getElementById('backupCodeText');
-            textarea.select();
-            document.execCommand('copy');
-            alert('کد کپی شد!');
-        }
-
-        // ==================== تغییر صفحه ====================
-        function switchPage(pageId) {
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            document.getElementById(pageId).classList.add('active');
-        }
-
-        // ==================== راه‌اندازی اولیه ====================
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('studentId').focus();
-            
-            // نمایش نسخه و اطلاعات
-            console.log('آزمون استروپ - نسخه 1.0');
-            console.log('لینک API:', CONFIG.webAppUrl);
         });
+    }
+    
+    // آزمایش‌های ناهمخوان (12 × 3 = 36)
+    for (let i = 0; i < CONFIG.trialsPerCondition; i++) {
+        CONFIG.words.forEach(word => {
+            const availableColors = CONFIG.colors.filter(c => c !== word);
+            const randomColor = availableColors[Math.floor(Math.random() * availableColors.length)];
+            
+            session.trials.push({
+                type: 'ناهمخوان',
+                word: word,
+                color: randomColor
+            });
+        });
+    }
+    
+    // تصادفی‌سازی
+    shuffleArray(session.trials);
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+// ==================== اجرای آزمایش ====================
+function runTrial() {
+    // بررسی پایان آزمون
+    if (session.currentTrial >= session.trials.length) {
+        console.log('تمامی آزمایش‌ها انجام شد');
+        finishTest();
+        return;
+    }
+    
+    const trial = session.trials[session.currentTrial];
+    const stimulus = document.getElementById('stimulus');
+    
+    // نمایش کلمه
+    stimulus.textContent = trial.word;
+    stimulus.style.color = getColorCode(trial.color);
+    
+    updateProgress();
+    session.startTime = Date.now();
+    
+    // زمان‌بندی برای آزمایش بعدی (اگر کاربر پاسخ ندهد)
+    clearTimeout(window.autoNextTimer);
+    window.autoNextTimer = setTimeout(() => {
+        if (session.currentTrial < session.trials.length) {
+            console.log('زمان آزمایش تمام شد، رفتن به بعدی');
+            recordResponse('بدون پاسخ');
+        }
+    }, CONFIG.displayTime + 1000);
+}
+
+function getColorCode(color) {
+    return color === 'قرمز' ? '#f44336' : 
+           color === 'آبی' ? '#2196f3' : '#4caf50';
+}
+
+// ==================== ثبت پاسخ ====================
+function recordResponse(color) {
+    // توقف تایمر خودکار
+    clearTimeout(window.autoNextTimer);
+    
+    const reactionTime = Date.now() - session.startTime;
+    const trial = session.trials[session.currentTrial];
+    
+    // ذخیره نتیجه
+    session.results.push({
+        trialNumber: session.currentTrial + 1,
+        type: trial.type,
+        word: trial.word,
+        correctColor: trial.color,
+        userResponse: color,
+        reactionTime: reactionTime,
+        isCorrect: color === trial.color ? 1 : 0
+    });
+    
+    // پاک کردن نمایش
+    document.getElementById('stimulus').textContent = '';
+    
+    // به‌روزرسانی آمار
+    updateStats();
+    
+    // افزایش شماره آزمایش
+    session.currentTrial++;
+    
+    // تاخیر بین آزمایش‌ها
+    setTimeout(() => {
+        runTrial();
+    }, CONFIG.restTime);
+}
+
+// ==================== به‌روزرسانی ====================
+function updateProgress() {
+    const counter = document.getElementById('trialCounter');
+    if (counter) {
+        counter.textContent = `آزمایش: ${session.currentTrial + 1}/${session.trials.length}`;
+    }
+}
+
+function updateStats() {
+    if (session.results.length === 0) return;
+    
+    // میانگین زمان
+    const avgTime = session.results.reduce((sum, r) => sum + r.reactionTime, 0) / session.results.length;
+    const avgElem = document.getElementById('avgTime');
+    if (avgElem) {
+        avgElem.textContent = `میانگین: ${Math.round(avgTime)}ms`;
+    }
+    
+    // دقت
+    const correctCount = session.results.filter(r => r.isCorrect === 1).length;
+    const accuracy = (correctCount / session.results.length) * 100;
+    const accElem = document.getElementById('accuracy');
+    if (accElem) {
+        accElem.textContent = `دقت: ${Math.round(accuracy)}٪`;
+    }
+}
+
+// ==================== تایمر ====================
+function startTimer() {
+    clearInterval(session.timerInterval);
+    
+    session.timerInterval = setInterval(() => {
+        const elapsed = Date.now() - session.testStartTime;
+        const minutes = Math.floor(elapsed / 60000);
+        const seconds = Math.floor((elapsed % 60000) / 1000);
+        
+        const timerElem = document.getElementById('timer');
+        if (timerElem) {
+            timerElem.textContent = `زمان: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+    }, 1000);
+}
+
+// ==================== پایان آزمون ====================
+function finishTest() {
+    console.log('تابع finishTest فراخوانی شد');
+    
+    // توقف تایمر
+    clearInterval(session.timerInterval);
+    clearTimeout(window.autoNextTimer);
+    
+    // محاسبه نتایج نهایی
+    const totalTrials = session.results.length;
+    const correctCount = session.results.filter(r => r.isCorrect === 1).length;
+    const accuracy = totalTrials > 0 ? (correctCount / totalTrials * 100) : 0;
+    const avgTime = totalTrials > 0 ? 
+        session.results.reduce((sum, r) => sum + r.reactionTime, 0) / totalTrials : 0;
+    
+    console.log('نتایج:', {
+        total: totalTrials,
+        correct: correctCount,
+        accuracy: accuracy,
+        avgTime: avgTime
+    });
+    
+    // نمایش نتایج در صفحه
+    const finalAcc = document.getElementById('finalAccuracy');
+    const finalTime = document.getElementById('finalAvgTime');
+    
+    if (finalAcc) finalAcc.textContent = `${Math.round(accuracy)}٪`;
+    if (finalTime) finalTime.textContent = `${Math.round(avgTime)}ms`;
+    
+    // ارسال نتایج به سرور
+    sendResultsToServer();
+    
+    // نمایش صفحه نتایج
+    setTimeout(() => {
+        switchPage('resultPage');
+    }, 1000);
+}
+
+// ==================== ارسال نتایج ====================
+function sendResultsToServer() {
+    const data = {
+        studentCode: session.studentCode,
+        results: session.results,
+        timestamp: new Date().toISOString(),
+        totalTrials: session.results.length,
+        correctTrials: session.results.filter(r => r.isCorrect === 1).length
+    };
+    
+    console.log('ارسال داده‌ها:', data);
+    
+    // نمایش پیام در حال بارگذاری
+    const messageContainer = document.getElementById('messageContainer');
+    if (messageContainer) {
+        messageContainer.innerHTML = `
+            <div class="message-box warning">
+                <i class="fas fa-spinner fa-spin"></i>
+                در حال ذخیره نتایج...
+            </div>
+        `;
+    }
+    
+    // روش ۱: استفاده از Google Apps Script
+    const formData = new FormData();
+    formData.append('studentCode', data.studentCode);
+    formData.append('results', JSON.stringify(data.results));
+    formData.append('timestamp', data.timestamp);
+    
+    fetch(CONFIG.webAppUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: formData
+    })
+    .then(() => {
+        console.log('نتایج ارسال شدند');
+        showSuccessMessage();
+    })
+    .catch(error => {
+        console.error('خطا در ارسال:', error);
+        showBackupOption(data);
+    });
+}
+
+// ==================== نمایش پیام موفقیت ====================
+function showSuccessMessage() {
+    const messageContainer = document.getElementById('messageContainer');
+    if (messageContainer) {
+        messageContainer.innerHTML = `
+            <div class="message-box success">
+                <i class="fas fa-check-circle"></i>
+                ✅ نتایج شما با موفقیت ثبت شد
+                <p style="font-size: 14px; margin-top: 10px; color: #0c5460;">
+                    با تشکر از مشارکت شما در این پژوهش
+                </p>
+            </div>
+        `;
+    }
+}
+
+// ==================== نمایش گزینه پشتیبان ====================
+function showBackupOption(data) {
+    const backupCode = btoa(encodeURIComponent(JSON.stringify(data)));
+    
+    const messageContainer = document.getElementById('messageContainer');
+    if (messageContainer) {
+        messageContainer.innerHTML = `
+            <div class="message-box warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                ⚠️ نتایج در سیستم مرکزی ذخیره نشد
+                <p style="font-size: 14px; margin-top: 10px;">
+                    لطفاً کد زیر را کپی کرده و برای پژوهشگر ارسال کنید:
+                </p>
+                <textarea id="backupCode" 
+                          style="width: 100%; height: 80px; margin-top: 10px; 
+                                 padding: 10px; font-family: monospace; 
+                                 border: 1px solid #ddd; border-radius: 5px;"
+                          readonly>${backupCode}</textarea>
+                <button onclick="copyBackupCode()" 
+                        style="margin-top: 10px; padding: 8px 15px; 
+                               background: #6c757d; color: white; 
+                               border: none; border-radius: 5px; cursor: pointer;">
+                    <i class="far fa-copy"></i> کپی کد
+                </button>
+            </div>
+        `;
+    }
+}
+
+function copyBackupCode() {
+    const textarea = document.getElementById('backupCode');
+    textarea.select();
+    document.execCommand('copy');
+    alert('کد کپی شد!');
+}
+
+// ==================== تغییر صفحه ====================
+function switchPage(pageId) {
+    console.log('تغییر صفحه به:', pageId);
+    
+    // پنهان کردن همه صفحات
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(page => {
+        page.classList.remove('active');
+    });
+    
+    // نمایش صفحه مورد نظر
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) {
+        targetPage.classList.add('active');
+        console.log('صفحه نمایش داده شد:', pageId);
+        
+        // اسکرول به بالای صفحه
+        window.scrollTo(0, 0);
+    } else {
+        console.error('صفحه پیدا نشد:', pageId);
+    }
+}
+
+// ==================== راه‌اندازی اولیه ====================
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('صفحه بارگذاری شد');
+    
+    // تمرکز روی فیلد کد دانشجویی
+    const studentIdInput = document.getElementById('studentId');
+    if (studentIdInput) {
+        studentIdInput.focus();
+        
+        // پیش‌پر کردن با کد تست (فقط برای توسعه)
+        if (window.location.hostname === 'localhost' || window.location.hostname.includes('github.io')) {
+            studentIdInput.value = 'test' + Math.floor(Math.random() * 1000);
+        }
+    }
+    
+    // اضافه کردن event listener برای کلید Enter
+    studentIdInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            startTest();
+        }
+    });
+});
     </script>
 </body>
 </html>
