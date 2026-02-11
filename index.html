@@ -2,89 +2,534 @@
 <html dir="rtl" lang="fa">
 <head>
     <meta charset="UTF-8">
-    <title>آزمون استروپ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>آزمون استروپ | پژوهش تغذیه و تمرکز</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Tahoma; background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .container { max-width: 600px; width: 100%; background: white; border-radius: 15px; padding: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .page { display: none; }
-        .active { display: block; }
-        h1 { color: #2c3e50; text-align: center; }
-        input, button { width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; }
-        button { background: #3498db; color: white; font-weight: bold; cursor: pointer; border: none; }
-        button:hover { background: #2980b9; }
-        .stimulus { font-size: 80px; font-weight: bold; text-align: center; padding: 40px; margin: 30px 0; background: #f8f9fa; border-radius: 10px; }
-        .buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 30px 0; }
-        .red-btn { background: #e74c3c; color: white; padding: 20px; font-size: 20px; border: none; border-radius: 8px; cursor: pointer; }
-        .blue-btn { background: #3498db; color: white; padding: 20px; font-size: 20px; border: none; border-radius: 8px; cursor: pointer; }
-        .green-btn { background: #2ecc71; color: white; padding: 20px; font-size: 20px; border: none; border-radius: 8px; cursor: pointer; }
-        .stats { display: flex; justify-content: space-between; margin: 15px 0; color: #7f8c8d; }
-        .success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 20px; border-radius: 8px; margin-top: 20px; text-align: center; }
-        @media (max-width: 600px) { .buttons { grid-template-columns: 1fr; } .stimulus { font-size: 60px; } }
+        /* ==================== متغیرهای رنگ ==================== */
+        :root {
+            --red: #e74c3c;
+            --blue: #3498db;
+            --green: #2ecc71;
+            --purple: #9b59b6;
+            --dark: #2c3e50;
+            --gray: #ecf0f1;
+        }
+
+        /* ==================== استایل پایه ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Vazirmatn', Tahoma, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 30px;
+            padding: 35px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==================== صفحات ==================== */
+        .page {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        /* ==================== تایپوگرافی ==================== */
+        h1 {
+            color: var(--dark);
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            color: var(--dark);
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            color: var(--dark);
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        /* ==================== کارت‌ها و باکس‌ها ==================== */
+        .info-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 25px 0;
+            border-right: 8px solid var(--purple);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .warning-card {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 20px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .success-card {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        /* ==================== لیست‌ها ==================== */
+        ul {
+            list-style: none;
+            padding-right: 0;
+        }
+
+        li {
+            margin-bottom: 15px;
+            padding-right: 30px;
+            position: relative;
+        }
+
+        li:before {
+            content: "✅";
+            position: absolute;
+            right: 0;
+            color: var(--purple);
+        }
+
+        .example-list li:before {
+            content: "🎯";
+        }
+
+        /* ==================== فرم‌ها ==================== */
+        .form-group {
+            margin: 30px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 18px;
+        }
+
+        input {
+            width: 100%;
+            padding: 18px 20px;
+            border: 3px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 18px;
+            font-family: 'Vazirmatn', sans-serif;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+
+        input:focus {
+            border-color: var(--purple);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(155, 89, 182, 0.1);
+            background: white;
+        }
+
+        /* ==================== دکمه‌ها - بدون هیچ افکت رنگی! ==================== */
+        .btn {
+            width: 100%;
+            padding: 18px 25px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 20px;
+            font-weight: 600;
+            font-family: 'Vazirmatn', sans-serif;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 15px 0;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(to right, #667eea, #764ba2); /* ثابت */
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* ==================== دکمه‌های پاسخ - کاملاً ثابت ==================== */
+        .response-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        /* دکمه قرمز - کاملاً ثابت */
+        .btn-red, 
+        .btn-red:hover, 
+        .btn-red:focus, 
+        .btn-red:active,
+        .btn-red:visited {
+            background: #e74c3c !important;
+            color: white !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: 0 5px 0 #c0392b, 0 8px 15px rgba(231, 76, 60, 0.3) !important;
+            transform: none !important;
+            opacity: 1 !important;
+            filter: none !important;
+        }
+
+        /* دکمه آبی - کاملاً ثابت */
+        .btn-blue, 
+        .btn-blue:hover, 
+        .btn-blue:focus, 
+        .btn-blue:active,
+        .btn-blue:visited {
+            background: #3498db !important;
+            color: white !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: 0 5px 0 #2980b9, 0 8px 15px rgba(52, 152, 219, 0.3) !important;
+            transform: none !important;
+            opacity: 1 !important;
+            filter: none !important;
+        }
+
+        /* دکمه سبز - کاملاً ثابت */
+        .btn-green, 
+        .btn-green:hover, 
+        .btn-green:focus, 
+        .btn-green:active,
+        .btn-green:visited {
+            background: #2ecc71 !important;
+            color: white !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: 0 5px 0 #27ae60, 0 8px 15px rgba(46, 204, 113, 0.3) !important;
+            transform: none !important;
+            opacity: 1 !important;
+            filter: none !important;
+        }
+
+        .response-btn {
+            padding: 25px 15px;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: 700;
+            font-family: 'Vazirmatn', sans-serif;
+            cursor: pointer;
+            transition: transform 0.1s;
+            border: none;
+            color: white;
+            letter-spacing: 2px;
+        }
+
+        .response-btn:active {
+            transform: scale(0.98) !important;
+        }
+
+        /* ==================== محرک آزمون ==================== */
+        .stimulus-container {
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid var(--gray);
+        }
+
+        .stimulus {
+            font-size: 100px;
+            font-weight: 900;
+            text-align: center;
+            padding: 40px;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border-radius: 20px;
+            border: 2px dashed #dee2e6;
+        }
+
+        /* ==================== آمار ==================== */
+        .stats-container {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            text-align: center;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        /* ==================== نتایج ==================== */
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .result-item {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .result-number {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--purple);
+            margin-bottom: 10px;
+        }
+
+        .result-label {
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+
+        /* ==================== فوتر ==================== */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid var(--gray);
+            color: #95a5a6;
+            font-size: 14px;
+        }
+
+        /* ==================== واکنش‌گرایی ==================== */
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+            .stimulus { font-size: 70px; min-height: 180px; }
+            .response-buttons { grid-template-columns: 1fr; }
+            .stats-container { grid-template-columns: 1fr; }
+            .result-grid { grid-template-columns: 1fr; }
+            .btn { font-size: 18px; }
+            .response-btn { padding: 20px; font-size: 20px; }
+        }
+
+        @media (max-width: 400px) {
+            .stimulus { font-size: 50px; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- صفحه ۱: ورود -->
+        <!-- ==================== صفحه ۱: ورود و راهنما ==================== -->
         <div id="page1" class="page active">
-            <h1>🧪 آزمون استروپ</h1>
-            <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                <p><strong>📌 فقط رنگ نوشته را انتخاب کنید!</strong></p>
-                <p>مثال: <span style="color: red;">آبی</span> ← دکمه قرمز</p>
+            <h1>🧠 آزمون استروپ</h1>
+            <p style="text-align: center; color: #666; margin-bottom: 25px; font-size: 18px;">
+                <strong>پژوهش ارتباط تغذیه و تمرکز</strong><br>
+                گروه تغذیه دانشگاه علوم پزشکی
+            </p>
+
+            <div class="info-card">
+                <h3>📋 راهنمای کامل آزمون</h3>
+                <ul>
+                    <li><strong>هدف:</strong> بررسی میزان تمرکز و زمان واکنش</li>
+                    <li><strong>مدت زمان:</strong> حدود ۳ تا ۴ دقیقه</li>
+                    <li><strong>تعداد سوالات:</strong> ۲۴ آزمایش کوتاه</li>
+                    <li><strong>محیط:</strong> در جای آرام و بدون حواس‌پرتی انجام دهید</li>
+                </ul>
             </div>
-            <input type="text" id="studentCode" placeholder="کد دانشجویی (مثال: 4011234567)">
-            <button onclick="startTest()">🚀 شروع آزمون</button>
+
+            <div class="warning-card">
+                <h3 style="color: #856404;">🎯 قانون طلایی</h3>
+                <ul class="example-list">
+                    <li><strong style="color: #e74c3c;">فقط رنگ نوشته را انتخاب کنید!</strong></li>
+                    <li>✖️ به معنای کلمه توجه نکنید</li>
+                    <li style="margin-top: 15px; background: white; padding: 15px; border-radius: 12px;">
+                        <span style="font-size: 24px; font-weight: bold; color: #e74c3c;">آبی</span>
+                        <span style="margin: 0 15px;">➡️</span>
+                        <span style="background: #e74c3c; color: white; padding: 8px 20px; border-radius: 8px;">دکمه قرمز</span>
+                    </li>
+                    <li style="background: white; padding: 15px; border-radius: 12px;">
+                        <span style="font-size: 24px; font-weight: bold; color: #2ecc71;">قرمز</span>
+                        <span style="margin: 0 15px;">➡️</span>
+                        <span style="background: #2ecc71; color: white; padding: 8px 20px; border-radius: 8px;">دکمه سبز</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="form-group">
+                <label for="studentCode">🆔 کد دانشجویی</label>
+                <input type="text" id="studentCode" placeholder="مثال: 4011234567" maxlength="20" autocomplete="off">
+                <p style="color: #666; margin-top: 10px; font-size: 14px;">کد منحصر‌به‌فرد خود را وارد کنید</p>
+            </div>
+
+            <button class="btn" onclick="startTest()">
+                🚀 شروع آزمون
+            </button>
+
+            <div class="footer">
+                <p>گروه تغذیه - دانشگاه علوم پزشکی</p>
+            </div>
         </div>
 
-        <!-- صفحه ۲: آزمون -->
+        <!-- ==================== صفحه ۲: آزمون اصلی ==================== -->
         <div id="page2" class="page">
-            <div class="stats">
-                <span id="progress">۰/۰</span>
-                <span id="accuracy">۰٪</span>
-                <span id="avgTime">۰ms</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <span style="background: var(--purple); color: white; padding: 8px 16px; border-radius: 20px; font-size: 14px;" id="studentCodeDisplay">
+                    کد: -
+                </span>
+                <span style="background: var(--dark); color: white; padding: 8px 16px; border-radius: 20px; font-size: 14px;" id="timer">
+                    ۰۰:۰۰
+                </span>
             </div>
-            <div id="stimulus" class="stimulus">آماده؟</div>
-            <div class="buttons">
-                <button class="red-btn" onclick="recordAnswer('قرمز')">قرمز</button>
-                <button class="blue-btn" onclick="recordAnswer('آبی')">آبی</button>
-                <button class="green-btn" onclick="recordAnswer('سبز')">سبز</button>
+
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-label">پیشرفت</div>
+                    <div class="stat-value" id="progress">۰/۰</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">دقت</div>
+                    <div class="stat-value" id="accuracy">۰٪</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">میانگین زمان</div>
+                    <div class="stat-value" id="avgTime">۰ms</div>
+                </div>
             </div>
-            <div class="stats">
-                <span id="studentCodeDisplay">کد: -</span>
-                <span id="timer">۰۰:۰۰</span>
+
+            <div class="stimulus-container">
+                <div id="stimulus" class="stimulus">✨</div>
+            </div>
+
+            <p style="text-align: center; color: var(--purple); font-weight: 600; margin: 20px 0; font-size: 20px;">
+                ⚡ رنگ نوشته را انتخاب کنید ⚡
+            </p>
+
+            <div class="response-buttons">
+                <button class="response-btn btn-red" onclick="recordAnswer('قرمز')">قرمز</button>
+                <button class="response-btn btn-blue" onclick="recordAnswer('آبی')">آبی</button>
+                <button class="response-btn btn-green" onclick="recordAnswer('سبز')">سبز</button>
+            </div>
+
+            <div style="background: #f8f9fa; border-radius: 12px; padding: 15px; text-align: center; color: #666; font-size: 14px;">
+                💡 فقط رنگ را ببینید، کلمه را فراموش کنید!
             </div>
         </div>
 
-        <!-- صفحه ۳: نتایج -->
+        <!-- ==================== صفحه ۳: نتایج ==================== -->
         <div id="page3" class="page">
-            <div class="success">
-                <h2>✅ آزمون کامل شد!</h2>
-                <div style="font-size: 30px; margin: 20px 0;">
-                    <div id="finalAccuracy">۰٪</div>
-                    <small>دقت</small>
+            <div class="success-card">
+                <div style="text-align: center;">
+                    <div style="font-size: 80px; margin-bottom: 20px;">🎉</div>
+                    <h2 style="color: #28a745;">آزمون با موفقیت انجام شد!</h2>
+                    <p style="color: #155724; font-size: 18px; margin: 20px 0;">
+                        داده‌های شما با موفقیت در سیستم ثبت شد.
+                    </p>
                 </div>
-                <div style="font-size: 20px;">
-                    <div id="finalAvgTime">۰ms</div>
-                    <small>میانگین زمان</small>
+            </div>
+
+            <div class="result-grid">
+                <div class="result-item">
+                    <div class="result-number" id="finalAccuracy">۰٪</div>
+                    <div class="result-label">دقت کلی</div>
                 </div>
-                <p id="saveStatus" style="margin-top: 20px; color: #28a745;">⏳ در حال ذخیره نتایج...</p>
+                <div class="result-item">
+                    <div class="result-number" id="finalAvgTime">۰ms</div>
+                    <div class="result-label">میانگین زمان</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-number" id="finalCorrect">۰</div>
+                    <div class="result-label">پاسخ صحیح</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-number" id="finalStroop">۰ms</div>
+                    <div class="result-label">اثر استروپ</div>
+                </div>
+            </div>
+
+            <div style="background: #e8f4fd; border-radius: 15px; padding: 20px; margin: 20px 0; border-right: 5px solid var(--blue);">
+                <p style="color: var(--dark);"><strong>📊 خلاصه نتایج:</strong></p>
+                <p style="margin-top: 10px;" id="finalSummary"></p>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <p style="color: #28a745; font-weight: 600; font-size: 18px;">
+                    ✅ نتایج در Google Sheets ذخیره شد
+                </p>
+                <p style="color: #666; margin-top: 15px; font-size: 14px;">
+                    با تشکر از مشارکت شما در این پژوهش 🙏
+                </p>
             </div>
         </div>
     </div>
 
     <script>
-        // ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
-        // 🔥 لینک وب اپ خود را اینجا جایگزین کنید!
+        // ==================== لینک وب اپ - اینجا جایگزین کنید ====================
         const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxRYmEgZwtfbHH93irywCs_xgV_pKPzc2evpvxZfKZVf766pPwmKzTjqcu6n435h8Pv/exec';
-        // ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
-
+        
+        // ==================== تنظیمات آزمون ====================
         const CONFIG = {
             words: ['قرمز', 'آبی', 'سبز'],
             colors: ['قرمز', 'آبی', 'سبز'],
             trialsPerCondition: 12,
-            displayTime: 1500,
-            restTime: 500
+            displayTime: 2000,
+            restTime: 600
         };
 
+        // ==================== وضعیت آزمون ====================
         let state = {
             studentCode: '',
             trials: [],
@@ -95,47 +540,84 @@
             timerInterval: null
         };
 
-        // شروع آزمون
+        // ==================== شروع آزمون ====================
         function startTest() {
             const code = document.getElementById('studentCode').value.trim();
-            if (!code) return alert('کد دانشجویی را وارد کنید');
+            
+            if (!code) {
+                alert('❌ لطفا کد دانشجویی خود را وارد کنید');
+                return;
+            }
             
             state.studentCode = code;
             document.getElementById('studentCodeDisplay').innerHTML = `کد: ${code}`;
             
             // تولید آزمایش‌ها
-            state.trials = [];
-            for (let i = 0; i < CONFIG.trialsPerCondition; i++) {
-                CONFIG.words.forEach(w => state.trials.push({ type: 'همخوان', word: w, color: w }));
-                CONFIG.words.forEach(w => {
-                    const other = CONFIG.colors.filter(c => c !== w);
-                    state.trials.push({ type: 'ناهمخوان', word: w, color: other[Math.floor(Math.random() * other.length)] });
-                });
-            }
-            state.trials.sort(() => Math.random() - 0.5);
+            generateTrials();
             
+            // شروع تایمر
             state.testStartTime = Date.now();
             startTimer();
+            
+            // رفتن به صفحه آزمون
             switchPage('page2');
-            setTimeout(runTrial, 500);
+            setTimeout(() => runTrial(), 1000);
         }
 
-        // اجرای آزمایش
+        // ==================== تولید آزمایش‌ها ====================
+        function generateTrials() {
+            state.trials = [];
+            
+            // آزمایش‌های همخوان
+            for (let i = 0; i < CONFIG.trialsPerCondition; i++) {
+                CONFIG.words.forEach(word => {
+                    state.trials.push({
+                        type: 'همخوان',
+                        word: word,
+                        color: word
+                    });
+                });
+            }
+            
+            // آزمایش‌های ناهمخوان
+            for (let i = 0; i < CONFIG.trialsPerCondition; i++) {
+                CONFIG.words.forEach(word => {
+                    const otherColors = CONFIG.colors.filter(c => c !== word);
+                    const randomColor = otherColors[Math.floor(Math.random() * otherColors.length)];
+                    state.trials.push({
+                        type: 'ناهمخوان',
+                        word: word,
+                        color: randomColor
+                    });
+                });
+            }
+            
+            // تصادفی‌سازی
+            state.trials.sort(() => Math.random() - 0.5);
+            document.getElementById('progress').textContent = `۰/${state.trials.length}`;
+        }
+
+        // ==================== اجرای آزمایش ====================
         function runTrial() {
-            if (state.currentTrial >= state.trials.length) return finishTest();
+            if (state.currentTrial >= state.trials.length) {
+                finishTest();
+                return;
+            }
             
             const trial = state.trials[state.currentTrial];
-            const el = document.getElementById('stimulus');
-            el.textContent = trial.word;
-            el.style.color = trial.color === 'قرمز' ? '#e74c3c' : trial.color === 'آبی' ? '#3498db' : '#2ecc71';
+            const stimulus = document.getElementById('stimulus');
+            
+            stimulus.textContent = trial.word;
+            stimulus.style.color = trial.color === 'قرمز' ? '#e74c3c' : 
+                                 trial.color === 'آبی' ? '#3498db' : '#2ecc71';
             
             document.getElementById('progress').textContent = `${state.currentTrial + 1}/${state.trials.length}`;
             state.startTime = Date.now();
         }
 
-        // ثبت پاسخ
+        // ==================== ثبت پاسخ ====================
         function recordAnswer(color) {
-            const rt = Date.now() - state.startTime;
+            const reactionTime = Date.now() - state.startTime;
             const trial = state.trials[state.currentTrial];
             
             state.results.push({
@@ -144,40 +626,85 @@
                 word: trial.word,
                 correctColor: trial.color,
                 userResponse: color,
-                reactionTime: rt,
+                reactionTime: reactionTime,
                 isCorrect: color === trial.color ? 1 : 0
             });
             
-            // آمار لحظه‌ای
-            const avg = state.results.reduce((s, r) => s + r.reactionTime, 0) / state.results.length;
-            const correct = state.results.filter(r => r.isCorrect === 1).length;
-            const acc = (correct / state.results.length * 100);
+            // به‌روزرسانی آمار
+            updateStats();
             
-            document.getElementById('avgTime').textContent = `${Math.round(avg)}ms`;
-            document.getElementById('accuracy').textContent = `${Math.round(acc)}%`;
+            // پاک کردن صفحه
+            document.getElementById('stimulus').textContent = '✨';
             
-            document.getElementById('stimulus').textContent = '';
+            // آزمایش بعدی
             state.currentTrial++;
             
             if (state.currentTrial < state.trials.length) {
-                setTimeout(runTrial, CONFIG.restTime);
+                setTimeout(() => runTrial(), CONFIG.restTime);
             } else {
                 finishTest();
             }
         }
 
-        // پایان آزمون و ارسال به شیت
+        // ==================== به‌روزرسانی آمار ====================
+        function updateStats() {
+            if (state.results.length === 0) return;
+            
+            const total = state.results.length;
+            const correct = state.results.filter(r => r.isCorrect === 1).length;
+            const avg = state.results.reduce((s, r) => s + r.reactionTime, 0) / total;
+            
+            document.getElementById('avgTime').textContent = `${Math.round(avg)}ms`;
+            document.getElementById('accuracy').textContent = `${Math.round((correct / total) * 100)}٪`;
+        }
+
+        // ==================== تایمر ====================
+        function startTimer() {
+            clearInterval(state.timerInterval);
+            
+            state.timerInterval = setInterval(() => {
+                const elapsed = Date.now() - state.testStartTime;
+                const minutes = Math.floor(elapsed / 60000);
+                const seconds = Math.floor((elapsed % 60000) / 1000);
+                
+                document.getElementById('timer').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // ==================== پایان آزمون و ارسال به شیت ====================
         function finishTest() {
             clearInterval(state.timerInterval);
             
-            // محاسبه نتایج نهایی
+            // محاسبات نهایی
             const total = state.results.length;
             const correct = state.results.filter(r => r.isCorrect === 1).length;
             const accuracy = Math.round((correct / total) * 100);
             const avgTime = Math.round(state.results.reduce((s, r) => s + r.reactionTime, 0) / total);
             
-            document.getElementById('finalAccuracy').textContent = `${accuracy}%`;
+            // محاسبه اثر استروپ
+            const congruent = state.results.filter(r => r.type === 'همخوان' && r.isCorrect === 1);
+            const incongruent = state.results.filter(r => r.type === 'ناهمخوان' && r.isCorrect === 1);
+            
+            const avgCong = congruent.length > 0 ? 
+                Math.round(congruent.reduce((s, r) => s + r.reactionTime, 0) / congruent.length) : 0;
+            const avgInc = incongruent.length > 0 ? 
+                Math.round(incongruent.reduce((s, r) => s + r.reactionTime, 0) / incongruent.length) : 0;
+            const stroopEffect = avgInc - avgCong;
+            
+            // نمایش نتایج
+            document.getElementById('finalAccuracy').textContent = `${accuracy}٪`;
             document.getElementById('finalAvgTime').textContent = `${avgTime}ms`;
+            document.getElementById('finalCorrect').textContent = `${correct}/${total}`;
+            document.getElementById('finalStroop').textContent = `${stroopEffect}ms`;
+            
+            document.getElementById('finalSummary').innerHTML = `
+                کد دانشجویی: ${state.studentCode}<br>
+                تعداد کل آزمایش‌ها: ${total}<br>
+                پاسخ صحیح: ${correct} از ${total}<br>
+                میانگین زمان واکنش: ${avgTime} میلی‌ثانیه<br>
+                اثر استروپ: ${stroopEffect} میلی‌ثانیه
+            `;
             
             // ارسال به Google Sheets
             fetch(WEB_APP_URL, {
@@ -188,33 +715,24 @@
                     studentCode: state.studentCode,
                     results: state.results
                 })
-            }).catch(err => console.log('ارسال شد (no-cors)'));
+            }).catch(err => console.log('ارسال شد'));
             
-            document.getElementById('saveStatus').innerHTML = '✅ نتایج با موفقیت در Google Sheets ذخیره شد!';
             switchPage('page3');
         }
 
-        // تایمر
-        function startTimer() {
-            clearInterval(state.timerInterval);
-            state.timerInterval = setInterval(() => {
-                const e = Date.now() - state.testStartTime;
-                const m = Math.floor(e / 60000);
-                const s = Math.floor((e % 60000) / 1000);
-                document.getElementById('timer').textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-            }, 1000);
+        // ==================== تغییر صفحه ====================
+        function switchPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
         }
 
-        // تغییر صفحه
-        function switchPage(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-
-        // اینتر در فیلد کد دانشجویی
+        // ==================== راه‌اندازی اولیه ====================
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('studentCode').focus();
-            document.getElementById('studentCode').addEventListener('keypress', e => {
+            
+            document.getElementById('studentCode').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') startTest();
             });
         });
