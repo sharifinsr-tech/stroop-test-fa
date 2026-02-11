@@ -3,214 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>آزمون استروپ - پژوهش تغذیه</title>
+    <title>آزمون استروپ</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: Tahoma, Arial, sans-serif; 
-            background: #f0f2f5;
-            padding: 20px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Tahoma, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            padding: 20px;
         }
-        .container { 
-            max-width: 600px; 
+        
+        .container {
+            max-width: 600px;
             width: 100%;
-            background: white; 
-            border-radius: 15px; 
-            padding: 30px; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
         }
-        .page { display: none; }
-        .active { display: block; }
-        h1 { color: #2c3e50; margin-bottom: 20px; text-align: center; }
-        input, textarea { 
-            width: 100%; 
-            padding: 12px; 
-            margin: 10px 0; 
-            border: 2px solid #ddd; 
-            border-radius: 8px; 
-            font-size: 16px; 
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
         }
-        .btn { 
-            background: #3498db; 
-            color: white; 
-            padding: 15px 30px; 
-            border: none; 
-            border-radius: 8px; 
-            font-size: 18px; 
-            cursor: pointer; 
+        
+        .page {
+            display: none;
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .form-group input {
             width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
             margin-top: 20px;
         }
-        .btn:hover { background: #2980b9; }
-        .stimulus { 
-            font-size: 80px; 
-            font-weight: bold; 
-            text-align: center; 
-            padding: 40px; 
-            margin: 30px 0; 
-            background: #f8f9fa; 
-            border-radius: 10px; 
+        
+        .btn:hover {
+            background: #45a049;
         }
-        .response-buttons { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 15px; 
-            margin: 30px 0; 
+        
+        .btn-start {
+            background: #2196F3;
         }
-        .response-btn { 
-            padding: 20px; 
-            border: none; 
-            border-radius: 8px; 
-            color: white; 
-            font-size: 20px; 
-            font-weight: bold; 
-            cursor: pointer; 
+        
+        .btn-start:hover {
+            background: #0b7dda;
         }
-        .red { background: #e74c3c; }
-        .blue { background: #3498db; }
-        .green { background: #2ecc71; }
-        .stats { 
-            display: flex; 
-            justify-content: space-between; 
-            margin: 15px 0; 
-            color: #7f8c8d; 
+        
+        .stimulus {
+            font-size: 80px;
+            font-weight: bold;
+            text-align: center;
+            padding: 40px;
+            margin: 30px 0;
+            background: #f5f5f5;
+            border-radius: 15px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .result-box { 
-            background: #d4edda; 
-            border: 1px solid #c3e6cb; 
-            color: #155724; 
-            padding: 20px; 
-            border-radius: 8px; 
-            margin: 20px 0; 
+        
+        .response-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 30px 0;
         }
-        .form-link {
-            background: #f8f9fa;
+        
+        .response-btn {
             padding: 20px;
-            border-radius: 8px;
-            border: 2px solid #28a745;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .response-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .red { background: #f44336; }
+        .blue { background: #2196F3; }
+        .green { background: #4CAF50; }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .result-box {
+            background: #e8f5e9;
+            border: 2px solid #4CAF50;
+            border-radius: 15px;
+            padding: 30px;
             margin: 20px 0;
             text-align: center;
         }
+        
+        .result-item {
+            margin: 20px 0;
+        }
+        
+        .result-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .result-label {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .form-link {
+            background: #e3f2fd;
+            border: 2px solid #2196F3;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
         .form-link a {
-            background: #28a745;
+            display: inline-block;
+            background: #2196F3;
             color: white;
             padding: 15px 30px;
             text-decoration: none;
-            border-radius: 8px;
-            display: inline-block;
-            margin-top: 10px;
+            border-radius: 10px;
             font-size: 18px;
+            margin-top: 15px;
         }
+        
         .form-link a:hover {
-            background: #218838;
+            background: #0b7dda;
         }
+        
+        .info-box {
+            background: #fff3cd;
+            border-right: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
         @media (max-width: 600px) {
+            .container { padding: 20px; }
+            .stimulus { font-size: 50px; }
             .response-buttons { grid-template-columns: 1fr; }
-            .stimulus { font-size: 60px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- صفحه ورود -->
-        <div id="loginPage" class="page active">
-            <h1>📋 آزمون استروپ</h1>
-            <p style="text-align: center; color: #666; margin-bottom: 30px;">
-                پژوهش ارتباط تغذیه و تمرکز<br>
-                گروه تغذیه دانشگاه علوم پزشکی
-            </p>
+        <!-- صفحه 1: ورود -->
+        <div id="page1" class="page active">
+            <h1>🧠 آزمون استروپ</h1>
             
-            <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
-                <h3 style="color: #856404;">📌 دستورالعمل:</h3>
-                <ul style="padding-right: 20px; line-height: 2;">
-                    <li>کلماتی با رنگ‌های مختلف ظاهر می‌شوند</li>
-                    <li><strong>فقط رنگ نوشته را انتخاب کنید، نه معنای کلمه</strong></li>
-                    <li>مثال: کلمه <span style="color: red;">آبی</span> ← دکمه <span style="background: red; color: white; padding: 3px 10px; border-radius: 5px;">قرمز</span></li>
-                    <li>آزمون حدود ۳ دقیقه طول می‌کشد</li>
+            <div class="info-box">
+                <h3 style="margin-bottom: 15px;">📋 دستورالعمل:</h3>
+                <ul style="list-style: none; padding-right: 0;">
+                    <li style="margin-bottom: 10px;">✅ کلماتی با رنگ‌های مختلف ظاهر می‌شوند</li>
+                    <li style="margin-bottom: 10px;">🎯 فقط <strong>رنگ نوشته</strong> را انتخاب کنید</li>
+                    <li style="margin-bottom: 10px;">⏱️ مثال: <span style="color: red;">آبی</span> → دکمه قرمز</li>
+                    <li style="margin-bottom: 10px;">📱 حدود ۳ دقیقه طول می‌کشد</li>
                 </ul>
             </div>
             
-            <div style="margin: 30px 0;">
-                <label style="font-weight: bold; display: block; margin-bottom: 10px;">🆔 کد دانشجویی:</label>
-                <input type="text" id="studentId" placeholder="مثال: 4011234567" style="width: 100%; padding: 15px; font-size: 16px;">
+            <div class="form-group">
+                <label>🆔 کد دانشجویی:</label>
+                <input type="text" id="studentCode" placeholder="مثال: 4011234567">
             </div>
             
-            <button class="btn" onclick="startTest()">شروع آزمون</button>
+            <button class="btn btn-start" onclick="startTest()">شروع آزمون</button>
         </div>
 
-        <!-- صفحه آزمون -->
-        <div id="testPage" class="page">
+        <!-- صفحه 2: آزمون -->
+        <div id="page2" class="page">
             <div class="stats">
-                <span id="trialCounter">۰/۰</span>
-                <span id="accuracy">دقت: ۰٪</span>
-                <span id="avgTime">میانگین: ۰ms</span>
+                <span>آزمایش: <span id="trialCount">0/0</span></span>
+                <span>دقت: <span id="accuracyRate">0%</span></span>
+                <span>میانگین: <span id="averageTime">0ms</span></span>
             </div>
             
             <div id="stimulus" class="stimulus">آماده؟</div>
             
             <div class="response-buttons">
-                <button class="response-btn red" onclick="recordResponse('قرمز')">قرمز</button>
-                <button class="response-btn blue" onclick="recordResponse('آبی')">آبی</button>
-                <button class="response-btn green" onclick="recordResponse('سبز')">سبز</button>
+                <button class="response-btn red" onclick="answer('قرمز')">قرمز</button>
+                <button class="response-btn blue" onclick="answer('آبی')">آبی</button>
+                <button class="response-btn green" onclick="answer('سبز')">سبز</button>
             </div>
             
             <div class="stats">
-                <span id="studentCodeDisplay">کد: -</span>
-                <span id="timer">زمان: ۰۰:۰۰</span>
+                <span>کد: <span id="displayCode">-</span></span>
+                <span>زمان: <span id="timer">00:00</span></span>
             </div>
         </div>
 
-        <!-- صفحه نتایج -->
-        <div id="resultPage" class="page">
-            <div style="text-align: center; margin: 30px 0;">
-                <div style="font-size: 60px; color: #28a745;">✅</div>
-                <h2 style="color: #28a745;">آزمون با موفقیت انجام شد!</h2>
-            </div>
-            
+        <!-- صفحه 3: نتایج -->
+        <div id="page3" class="page">
             <div class="result-box">
-                <h3 style="margin-bottom: 20px;">📊 نتایج شما:</h3>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; text-align: center;">
-                    <div>
-                        <div style="font-size: 30px; font-weight: bold; color: #155724;" id="finalAccuracy">۰٪</div>
-                        <div>دقت کلی</div>
+                <h2 style="color: #4CAF50; margin-bottom: 30px;">✅ آزمون با موفقیت انجام شد!</h2>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                    <div class="result-item">
+                        <div class="result-number" id="finalAccuracy">0%</div>
+                        <div class="result-label">دقت کلی</div>
                     </div>
-                    <div>
-                        <div style="font-size: 30px; font-weight: bold; color: #155724;" id="finalAvgTime">۰ms</div>
-                        <div>میانگین زمان</div>
+                    <div class="result-item">
+                        <div class="result-number" id="finalReactionTime">0ms</div>
+                        <div class="result-label">میانگین زمان</div>
                     </div>
+                    <div class="result-item">
+                        <div class="result-number" id="finalCorrect">0</div>
+                        <div class="result-label">پاسخ صحیح</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-number" id="finalStroop">0ms</div>
+                        <div class="result-label">اثر استروپ</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
+                    <p><strong>🆔 کد دانشجویی:</strong> <span id="finalStudentCode">-</span></p>
+                    <p><strong>📅 تاریخ:</strong> <span id="finalDate">-</span></p>
+                    <p><strong>⏰ زمان:</strong> <span id="finalTime">-</span></p>
                 </div>
             </div>
             
-            <!-- لینک فرم گوگل - اینجا لینک خودت را بگذار -->
             <div class="form-link">
-                <h3 style="color: #28a745; margin-bottom: 15px;">📝 مرحله آخر: ثبت نتایج</h3>
-                <p style="margin-bottom: 15px;">لطفاً برای ثبت نتایج خود در پژوهش، روی دکمه زیر کلیک کنید:</p>
-                <a id="googleFormLink" href="#" target="_blank">📋 ثبت نتایج در فرم پژوهش</a>
-                <p style="margin-top: 15px; font-size: 14px; color: #666;">
-                    کد نتایج به طور خودکار در فرم قرار می‌گیرد
+                <h3 style="color: #2196F3; margin-bottom: 15px;">📝 مرحله آخر: ثبت نتایج</h3>
+                <p style="margin-bottom: 20px;">برای ثبت نتایج خود در پژوهش، روی دکمه زیر کلیک کنید:</p>
+                
+                <!-- ⚠️ لینک فرم گوگل خود را اینجا جایگزین کنید -->
+                <a id="formLink" href="https://forms.gle/htGyfixv4mZPhUdq9" target="_blank">
+                    📋 ثبت نتایج در فرم پژوهش
+                </a>
+                
+                <p style="margin-top: 20px; font-size: 14px; color: #666;">
+                    با تشکر از مشارکت شما در این پژوهش 🙏
                 </p>
             </div>
         </div>
     </div>
 
     <script>
-        // ==================== تنظیمات ====================
-        const CONFIG = {
+        // ==================== تنظیمات آزمون ====================
+        const config = {
             words: ['قرمز', 'آبی', 'سبز'],
             colors: ['قرمز', 'آبی', 'سبز'],
-            trialsPerCondition: 12,
-            displayTime: 1500,
-            restTime: 500,
-            // ⚠️ لینک فرم گوگل خودت را اینجا بگذار:
-            googleFormUrl: 'https://forms.gle/htGyfixv4mZPhUdq9' // اینجا لینک فرم خودت را بگذار
+            trialsPerCondition: 12,  // 12 همخوان + 12 ناهمخوان = 24 آزمایش
+            displayTime: 1500,       // زمان نمایش هر کلمه (میلی‌ثانیه)
+            restTime: 500,          // زمان بین کلمات
+            // ⚠️ لینک فرم گوگل خود را اینجا جایگزین کنید
+            formUrl: 'https://forms.gle/YOUR_FORM_LINK'
         };
 
-        // ==================== وضعیت ====================
-        let session = {
+        // ==================== وضعیت آزمون ====================
+        let state = {
             studentCode: '',
             trials: [],
             currentTrial: 0,
@@ -222,29 +318,39 @@
 
         // ==================== شروع آزمون ====================
         function startTest() {
-            session.studentCode = document.getElementById('studentId').value.trim();
+            const code = document.getElementById('studentCode').value.trim();
             
-            if (!session.studentCode) {
-                alert('لطفا کد دانشجویی خود را وارد کنید.');
+            if (!code) {
+                alert('❌ لطفا کد دانشجویی خود را وارد کنید');
                 return;
             }
             
-            document.getElementById('studentCodeDisplay').textContent = 'کد: ' + session.studentCode;
+            state.studentCode = code;
+            document.getElementById('displayCode').textContent = code;
+            document.getElementById('finalStudentCode').textContent = code;
+            
+            // تولید آزمایش‌ها
             generateTrials();
-            session.testStartTime = Date.now();
+            
+            // شروع تایمر
+            state.testStartTime = Date.now();
             startTimer();
-            switchPage('testPage');
-            setTimeout(() => runTrial(), 1000);
+            
+            // رفتن به صفحه آزمون
+            switchPage('page2');
+            
+            // شروع اولین آزمایش
+            setTimeout(() => runTrial(), 500);
         }
 
         // ==================== تولید آزمایش‌ها ====================
         function generateTrials() {
-            session.trials = [];
+            state.trials = [];
             
-            // همخوان
-            for (let i = 0; i < CONFIG.trialsPerCondition; i++) {
-                CONFIG.words.forEach(word => {
-                    session.trials.push({
+            // آزمایش‌های همخوان (کلمه و رنگ یکی هستند)
+            for (let i = 0; i < config.trialsPerCondition; i++) {
+                config.words.forEach(word => {
+                    state.trials.push({
                         type: 'همخوان',
                         word: word,
                         color: word
@@ -252,12 +358,13 @@
                 });
             }
             
-            // ناهمخوان
-            for (let i = 0; i < CONFIG.trialsPerCondition; i++) {
-                CONFIG.words.forEach(word => {
-                    const available = CONFIG.colors.filter(c => c !== word);
-                    const randomColor = available[Math.floor(Math.random() * available.length)];
-                    session.trials.push({
+            // آزمایش‌های ناهمخوان (کلمه و رنگ متفاوت هستند)
+            for (let i = 0; i < config.trialsPerCondition; i++) {
+                config.words.forEach(word => {
+                    const otherColors = config.colors.filter(c => c !== word);
+                    const randomColor = otherColors[Math.floor(Math.random() * otherColors.length)];
+                    
+                    state.trials.push({
                         type: 'ناهمخوان',
                         word: word,
                         color: randomColor
@@ -265,81 +372,100 @@
                 });
             }
             
-            // تصادفی‌سازی
-            session.trials.sort(() => Math.random() - 0.5);
+            // تصادفی کردن ترتیب آزمایش‌ها
+            shuffleArray(state.trials);
+            
+            // به‌روزرسانی شمارنده
+            document.getElementById('trialCount').textContent = `1/${state.trials.length}`;
         }
 
-        // ==================== اجرای آزمایش ====================
+        // ==================== تصادفی‌سازی ====================
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // ==================== اجرای یک آزمایش ====================
         function runTrial() {
-            if (session.currentTrial >= session.trials.length) {
+            if (state.currentTrial >= state.trials.length) {
                 finishTest();
                 return;
             }
             
-            const trial = session.trials[session.currentTrial];
+            const trial = state.trials[state.currentTrial];
             const stimulus = document.getElementById('stimulus');
             
+            // نمایش کلمه
             stimulus.textContent = trial.word;
-            stimulus.style.color = getColorCode(trial.color);
             
-            updateProgress();
-            session.startTime = Date.now();
-        }
-
-        function getColorCode(color) {
-            return color === 'قرمز' ? '#e74c3c' : 
-                   color === 'آبی' ? '#3498db' : '#2ecc71';
+            // تنظیم رنگ
+            if (trial.color === 'قرمز') stimulus.style.color = '#f44336';
+            else if (trial.color === 'آبی') stimulus.style.color = '#2196F3';
+            else stimulus.style.color = '#4CAF50';
+            
+            // به‌روزرسانی شمارنده
+            document.getElementById('trialCount').textContent = 
+                `${state.currentTrial + 1}/${state.trials.length}`;
+            
+            // ذخیره زمان شروع
+            state.startTime = Date.now();
         }
 
         // ==================== ثبت پاسخ ====================
-        function recordResponse(color) {
-            const reactionTime = Date.now() - session.startTime;
-            const trial = session.trials[session.currentTrial];
+        function answer(color) {
+            const reactionTime = Date.now() - state.startTime;
+            const trial = state.trials[state.currentTrial];
             
-            session.results.push({
-                trialNumber: session.currentTrial + 1,
+            // ذخیره نتیجه
+            state.results.push({
+                trialNumber: state.currentTrial + 1,
                 type: trial.type,
                 word: trial.word,
                 correctColor: trial.color,
-                userResponse: color,
+                userAnswer: color,
                 reactionTime: reactionTime,
                 isCorrect: color === trial.color ? 1 : 0
             });
             
+            // پاک کردن صفحه
             document.getElementById('stimulus').textContent = '';
+            
+            // به‌روزرسانی آمار
             updateStats();
-            session.currentTrial++;
             
-            setTimeout(() => {
-                if (session.currentTrial < session.trials.length) {
-                    runTrial();
-                }
-            }, CONFIG.restTime);
+            // رفتن به آزمایش بعدی
+            state.currentTrial++;
+            
+            if (state.currentTrial < state.trials.length) {
+                setTimeout(() => runTrial(), config.restTime);
+            } else {
+                finishTest();
+            }
         }
 
-        // ==================== به‌روزرسانی ====================
-        function updateProgress() {
-            document.getElementById('trialCounter').textContent = 
-                `${session.currentTrial + 1}/${session.trials.length}`;
-        }
-
+        // ==================== به‌روزرسانی آمار ====================
         function updateStats() {
-            if (session.results.length === 0) return;
+            if (state.results.length === 0) return;
             
-            const avgTime = session.results.reduce((sum, r) => sum + r.reactionTime, 0) / session.results.length;
-            document.getElementById('avgTime').textContent = `میانگین: ${Math.round(avgTime)}ms`;
+            // میانگین زمان
+            const avgTime = state.results.reduce((sum, r) => sum + r.reactionTime, 0) / state.results.length;
+            document.getElementById('averageTime').textContent = `${Math.round(avgTime)}ms`;
             
-            const correct = session.results.filter(r => r.isCorrect === 1).length;
-            const accuracy = (correct / session.results.length) * 100;
-            document.getElementById('accuracy').textContent = `دقت: ${Math.round(accuracy)}٪`;
+            // درصد دقت
+            const correct = state.results.filter(r => r.isCorrect === 1).length;
+            const accuracy = Math.round((correct / state.results.length) * 100);
+            document.getElementById('accuracyRate').textContent = `${accuracy}%`;
         }
 
         // ==================== تایمر ====================
         function startTimer() {
-            clearInterval(session.timerInterval);
+            clearInterval(state.timerInterval);
             
-            session.timerInterval = setInterval(() => {
-                const elapsed = Date.now() - session.testStartTime;
+            state.timerInterval = setInterval(() => {
+                const elapsed = Date.now() - state.testStartTime;
                 const minutes = Math.floor(elapsed / 60000);
                 const seconds = Math.floor((elapsed % 60000) / 1000);
                 
@@ -350,62 +476,68 @@
 
         // ==================== پایان آزمون ====================
         function finishTest() {
-            clearInterval(session.timerInterval);
+            // توقف تایمر
+            clearInterval(state.timerInterval);
             
-            const correct = session.results.filter(r => r.isCorrect === 1).length;
-            const total = session.results.length;
-            const accuracy = (correct / total) * 100;
-            const avgTime = session.results.reduce((sum, r) => sum + r.reactionTime, 0) / total;
+            // محاسبه نتایج نهایی
+            const total = state.results.length;
+            const correct = state.results.filter(r => r.isCorrect === 1).length;
+            const accuracy = Math.round((correct / total) * 100);
+            const avgTime = Math.round(state.results.reduce((sum, r) => sum + r.reactionTime, 0) / total);
             
-            document.getElementById('finalAccuracy').textContent = `${Math.round(accuracy)}٪`;
-            document.getElementById('finalAvgTime').textContent = `${Math.round(avgTime)}ms`;
-            
-            // آماده‌سازی داده برای ارسال
-            const resultData = {
-                studentCode: session.studentCode,
-                date: new Date().toLocaleDateString('fa-IR'),
-                time: new Date().toLocaleTimeString('fa-IR'),
-                accuracy: Math.round(accuracy),
-                avgTime: Math.round(avgTime),
-                totalTrials: total,
-                correctTrials: correct,
-                stroopEffect: calculateStroopEffect()
-            };
-            
-            // ایجاد لینک فرم با اطلاعات از پیش پر شده
-            const formLink = CONFIG.googleFormUrl;
-            const resultJSON = JSON.stringify(resultData);
-            
-            // ذخیره در localStorage برای استفاده در لینک
-            localStorage.setItem('stroop_result_' + session.studentCode, resultJSON);
-            
-            // تنظیم لینک فرم
-            const formLinkElement = document.getElementById('googleFormLink');
-            formLinkElement.href = formLink;
-            
-            switchPage('resultPage');
-        }
-
-        function calculateStroopEffect() {
-            const congruent = session.results.filter(r => r.type === 'همخوان' && r.isCorrect === 1);
-            const incongruent = session.results.filter(r => r.type === 'ناهمخوان' && r.isCorrect === 1);
+            // محاسبه اثر استروپ
+            const congruent = state.results.filter(r => r.type === 'همخوان' && r.isCorrect === 1);
+            const incongruent = state.results.filter(r => r.type === 'ناهمخوان' && r.isCorrect === 1);
             
             const avgCongruent = congruent.length > 0 ? 
-                congruent.reduce((sum, r) => sum + r.reactionTime, 0) / congruent.length : 0;
-            const avgIncongruent = incongruent.length > 0 ? 
-                incongruent.reduce((sum, r) => sum + r.reactionTime, 0) / incongruent.length : 0;
+                Math.round(congruent.reduce((sum, r) => sum + r.reactionTime, 0) / congruent.length) : 0;
             
-            return Math.round(avgIncongruent - avgCongruent);
+            const avgIncongruent = incongruent.length > 0 ? 
+                Math.round(incongruent.reduce((sum, r) => sum + r.reactionTime, 0) / incongruent.length) : 0;
+            
+            const stroopEffect = avgIncongruent - avgCongruent;
+            
+            // نمایش نتایج
+            document.getElementById('finalAccuracy').textContent = `${accuracy}%`;
+            document.getElementById('finalReactionTime').textContent = `${avgTime}ms`;
+            document.getElementById('finalCorrect').textContent = `${correct}/${total}`;
+            document.getElementById('finalStroop').textContent = `${stroopEffect}ms`;
+            
+            // تاریخ و زمان
+            const now = new Date();
+            document.getElementById('finalDate').textContent = now.toLocaleDateString('fa-IR');
+            document.getElementById('finalTime').textContent = now.toLocaleTimeString('fa-IR');
+            
+            // تنظیم لینک فرم
+            const formLink = document.getElementById('formLink');
+            formLink.href = config.formUrl;
+            
+            // رفتن به صفحه نتایج
+            switchPage('page3');
         }
 
         // ==================== تغییر صفحه ====================
         function switchPage(pageId) {
+            // مخفی کردن همه صفحات
             document.querySelectorAll('.page').forEach(page => {
                 page.classList.remove('active');
             });
+            
+            // نمایش صفحه مورد نظر
             document.getElementById(pageId).classList.add('active');
+            
+            // اسکرول به بالا
+            window.scrollTo(0, 0);
         }
+
+        // ==================== راه‌اندازی اولیه ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            // فوکوس روی فیلد کد دانشجویی
+            document.getElementById('studentCode').focus();
+            
+            // نمایش لینک فرم در کنسول (برای تست)
+            console.log('لینک فرم:', config.formUrl);
+        });
     </script>
 </body>
 </html>
-
